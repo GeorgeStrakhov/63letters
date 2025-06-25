@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import GameGrid from '@/app/components/GameGrid';
+import InstructionsModal from '@/app/components/InstructionsModal';
 import { getDateAnchors, getDateLetters, isValidDateString, getTodayDateString, dateToGrid } from '@/app/utils/dateToSeed';
 import { encodeGridCompact, decodeGridCompact } from '@/app/utils/gridEncoding';
 import { useParams, useRouter } from 'next/navigation';
@@ -23,6 +24,16 @@ const HashLetters = () => {
   const [swapsAllowed, setSwapsAllowed] = useState(true);
   const [isValidDate, setIsValidDate] = useState(true);
   const [isCheating, setIsCheating] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
+
+  // Show instructions on first visit
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('hasVisited');
+    if (!hasVisited) {
+      setShowInstructions(true);
+      sessionStorage.setItem('hasVisited', 'true');
+    }
+  }, []);
 
   // Initialize grid from hash
   useEffect(() => {
@@ -88,13 +99,17 @@ const HashLetters = () => {
   }
 
   return (
-    <GameGrid 
-      grid={grid}
-      swapsAllowed={swapsAllowed}
-      onGridTap={() => {}}
-      onSwap={handleSwap}
-      onDelete={handleDelete}
-    />
+    <>
+      {showInstructions && <InstructionsModal onClose={() => setShowInstructions(false)} />}
+      <GameGrid 
+        grid={grid}
+        swapsAllowed={swapsAllowed}
+        onGridTap={() => {}}
+        onSwap={handleSwap}
+        onDelete={handleDelete}
+        onShowInstructions={() => setShowInstructions(true)}
+      />
+    </>
   );
 };
 

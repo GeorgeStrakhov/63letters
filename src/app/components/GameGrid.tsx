@@ -13,6 +13,7 @@ interface GameGridProps {
   onGridTap: () => void;
   onSwap: (fromIndex: number, toIndex: number) => void;
   onDelete?: (index: number) => void;
+  onShowInstructions?: () => void;
 }
 
 const GameGrid: React.FC<GameGridProps> = ({ 
@@ -20,7 +21,8 @@ const GameGrid: React.FC<GameGridProps> = ({
   swapsAllowed, 
   onGridTap, 
   onSwap,
-  onDelete 
+  onDelete,
+  onShowInstructions
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [swappingCells, setSwappingCells] = useState<Set<number>>(new Set());
@@ -72,8 +74,32 @@ const GameGrid: React.FC<GameGridProps> = ({
       padding: '20px',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      position: 'relative'
     }}>
+      {swapsAllowed && onShowInstructions && (
+        <button 
+          onClick={onShowInstructions}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            background: 'none',
+            border: '1px solid #ccc',
+            borderRadius: '50%',
+            color: '#999',
+            cursor: 'pointer',
+            fontSize: '1rem',
+            height: '30px',
+            width: '30px',
+            lineHeight: '28px',
+            padding: 0,
+            zIndex: 10
+          }}
+        >
+          ?
+        </button>
+      )}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(9, 1fr)',
